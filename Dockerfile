@@ -11,6 +11,7 @@ ENV WEBHOOK_URL=""
 ENV N8N_RUNNERS_ENABLED=true
 ENV GENERIC_TIMEZONE=Asia/Dhaka
 ENV N8N_USER_FOLDER=/data
+ENV PATH="/usr/local/bin:${PATH}"
 
 # Persistent-ish data dir inside the space (note: free HF Spaces storage
 # is NOT guaranteed persistent across rebuilds unless persistent storage
@@ -21,4 +22,7 @@ USER node
 
 EXPOSE 7860
 
+# Use the base image's own entrypoint (tini + n8n) instead of overriding it,
+# since HF Spaces was failing to resolve "n8n" as a bare command.
+ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]
 CMD ["n8n", "start"]
