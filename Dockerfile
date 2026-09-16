@@ -2,7 +2,9 @@ FROM n8nio/n8n:latest
 
 USER root
 
-# Install nginx (router) and Node.js tools already present in the n8n image
+ENV PATH="/sbin:/usr/sbin:/bin:/usr/bin:$PATH"
+
+# Install nginx (router) and supervisor (process manager)
 RUN apk add --no-cache nginx supervisor
 
 # ---- n8n config ----
