@@ -31,4 +31,5 @@ EXPOSE 7860
 
 USER node
 
+ENTRYPOINT []
 CMD ["node", "/start.js"]
