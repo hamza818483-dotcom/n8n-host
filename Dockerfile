@@ -32,4 +32,4 @@ EXPOSE 7860
 
 USER node
 
-CMD ["/start.sh"]
+CMD ["sh", "/start.sh"]
