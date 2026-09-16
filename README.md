@@ -10,15 +10,16 @@ pinned: false
 
 # n8n self-hosted + MCP bridge (combined)
 
-This Space runs n8n AND an MCP bridge in the same container, routed by nginx:
+This Space runs n8n AND an MCP bridge in the same container, using a pure
+Node.js router (no OS packages needed, avoids Alpine `apk` build issues):
 
 - `https://<space>.hf.space/` → n8n (editor, webhooks, REST API) — unchanged
 - `https://<space>.hf.space/mcp` → MCP bridge, so Claude can manage workflows
 
 ## Setup
 
-1. Replace your existing Space files with these: `Dockerfile`, `nginx.conf`,
-   `supervisord.conf`, `bridge/server.js`, `bridge/package.json`.
+1. Replace your existing Space files with these: `Dockerfile`, `start.sh`,
+   `bridge/server.js`, `bridge/router.js`, `bridge/package.json`.
 2. Go to Space **Settings → Variables and secrets** and make sure these are set
    (keep whatever you already had for n8n, and add the new one):
    - `WEBHOOK_URL` = `https://<your-space-name>.hf.space/`
