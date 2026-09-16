@@ -11,6 +11,7 @@ ENV WEBHOOK_URL=""
 ENV N8N_RUNNERS_ENABLED=true
 ENV GENERIC_TIMEZONE=Asia/Dhaka
 ENV N8N_USER_FOLDER=/data
+ENV N8N_PROXY_HOPS=1
 
 RUN mkdir -p /data && chown -R node:node /data
 
