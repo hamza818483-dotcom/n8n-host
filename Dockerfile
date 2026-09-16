@@ -2,8 +2,11 @@ FROM n8nio/n8n:latest
 
 USER root
 
-# HF Spaces requires the app to listen on port 7860
-ENV N8N_PORT=7860
+# Install nginx (router) and Node.js tools already present in the n8n image
+RUN apk add --no-cache nginx supervisor
+
+# ---- n8n config ----
+ENV N8N_PORT=7861
 ENV N8N_HOST=0.0.0.0
 ENV N8N_PROTOCOL=https
 ENV N8N_EDITOR_BASE_URL=""
@@ -14,11 +17,22 @@ ENV N8N_USER_FOLDER=/data
 
 RUN mkdir -p /data && chown -R node:node /data
 
-USER node
+# ---- MCP bridge ----
+WORKDIR /bridge
+COPY bridge/package.json .
+RUN npm install --production
+COPY bridge/server.js .
+ENV PORT=7862
+
+# ---- nginx router: routes / -> n8n (7861), /mcp -> bridge (7862) ----
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# ---- supervisor: runs n8n, bridge, and nginx together ----
+COPY supervisord.conf /etc/supervisord.conf
+
+RUN chown -R node:node /bridge /etc/nginx || true
+RUN mkdir -p /run/nginx
 
 EXPOSE 7860
 
-# Bypass any entrypoint/PATH resolution issues on HF Spaces by calling
-# the n8n cli.js directly through node.
-ENTRYPOINT []
-CMD ["node", "/usr/local/lib/node_modules/n8n/bin/n8n", "start"]
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]
