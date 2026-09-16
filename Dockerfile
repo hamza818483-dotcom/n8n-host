@@ -25,11 +25,10 @@ ENV ROUTER_PORT=7860
 
 RUN chown -R node:node /bridge
 
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
+COPY start.js /start.js
 
 EXPOSE 7860
 
 USER node
 
-CMD ["/bin/sh", "/start.sh"]
+CMD ["node", "/start.js"]
